@@ -1,6 +1,9 @@
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const path = require('path');
+const {resolve} = require('path');
+const {getIfUtils, removeEmpty} = require('webpack-config-utils');
+
+const {ifProduction} = getIfUtils(process.env.NODE_ENV || 'development');
 
 const vendors = [
   'react-dom',
@@ -10,14 +13,16 @@ const vendors = [
 module.exports = {
   devtool: 'source-map',
 
+  context: resolve('./src'),
+
   entry: {
-    app: './src/app.js',
+    app: './app.js',
     vendor: vendors,
   },
 
   output: {
     filename: "[name].js",
-    path: './dist',
+    path: resolve('./dist'),
   },
 
   module: {
@@ -34,23 +39,25 @@ module.exports = {
     extensions: ['*', '.js', '.jsx'],
   },
 
-  plugins: [
+  plugins: removeEmpty([
     new HtmlWebpackPlugin({
-      template: './src/index.html',
+      template: './index.html',
       inject: 'body',
     }),
     new webpack.optimize.CommonsChunkPlugin({name: 'vendor', filename: 'vendor.js'}),
-    new webpack.optimize.DedupePlugin(),
-    new webpack.optimize.UglifyJsPlugin({
+    new webpack.DefinePlugin({
+      'process.env': {
+        'NODE_ENV': JSON.stringify(process.env.NODE_ENV)
+      }
+    }),
+
+    ifProduction(new webpack.optimize.DedupePlugin()),
+    ifProduction(new webpack.optimize.OccurrenceOrderPlugin(true)),
+    ifProduction(new webpack.optimize.UglifyJsPlugin({
       compress: {
         warnings: false,
       },
       sourceMap: true
-    }),
-    new webpack.DefinePlugin({
-      'process.env': {
-        'NODE_ENV': JSON.stringify('production')
-      }
-    }),
-  ]
+    })),
+  ]),
 };

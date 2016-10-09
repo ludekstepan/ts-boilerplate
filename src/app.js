@@ -13,7 +13,7 @@ import App from "./components/App";
 import rootReducer from './reducers';
 
 // create the store:
-const store = createStore(rootReducer);
+const store = createStore(rootReducer, window.devToolsExtension && window.devToolsExtension());
 
 render(
   <AppContainer>

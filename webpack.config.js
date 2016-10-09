@@ -7,7 +7,9 @@ const {ifProduction, ifNotProduction} = getIfUtils(process.env.NODE_ENV || 'deve
 
 const vendors = [
   'react-dom',
-  'react'
+  'react',
+  'redux',
+  'react-redux',
 ];
 
 module.exports = {

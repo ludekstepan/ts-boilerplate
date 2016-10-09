@@ -3,7 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const {resolve} = require('path');
 const {getIfUtils, removeEmpty} = require('webpack-config-utils');
 
-const {ifProduction} = getIfUtils(process.env.NODE_ENV || 'development');
+const {ifProduction, ifNotProduction} = getIfUtils(process.env.NODE_ENV || 'development');
 
 const vendors = [
   'react-dom',
@@ -50,6 +50,7 @@ module.exports = {
         'NODE_ENV': JSON.stringify(process.env.NODE_ENV)
       }
     }),
+    ifNotProduction(new webpack.NamedModulesPlugin()),
 
     ifProduction(new webpack.optimize.DedupePlugin()),
     ifProduction(new webpack.optimize.OccurrenceOrderPlugin(true)),

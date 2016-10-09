@@ -3,7 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const {resolve} = require('path');
 const {getIfUtils, removeEmpty} = require('webpack-config-utils');
 
-const {ifProduction, ifNotProduction} = getIfUtils(process.env.NODE_ENV || 'development');
+const {ifProduction, ifNotProduction, ifNotTest} = getIfUtils(process.env.NODE_ENV || 'development');
 
 const vendors = [
   'react-dom',
@@ -15,10 +15,10 @@ const vendors = [
 module.exports = {
   devtool: 'source-map',
 
-  context: resolve('./src'),
+  // context: resolve('./src'),
 
   entry: {
-    app: './app.js',
+    app: './src/app.js',
     vendor: vendors,
   },
 
@@ -34,16 +34,21 @@ module.exports = {
         exclude: /node_modules/,
         loaders: ['babel-loader']
       },
+
+      {
+        test: /\.(ts|tsx)$/,
+        loader: 'awesome-typescript-loader'
+      },
     ],
   },
 
   resolve: {
-    extensions: ['*', '.js', '.jsx'],
+    extensions: ['*', '.js', '.jsx', '.ts', '.tsx'],
   },
 
   plugins: removeEmpty([
     new HtmlWebpackPlugin({
-      template: './index.html',
+      template: resolve('./src/index.html'),
       inject: 'body',
     }),
     new webpack.optimize.CommonsChunkPlugin({name: 'vendor', filename: 'vendor.js'}),

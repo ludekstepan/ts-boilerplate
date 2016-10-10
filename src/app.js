@@ -35,4 +35,8 @@ if (module.hot) {
       document.getElementById('root')
     );
   });
+
+  module.hot.accept('./reducers', () => {
+    store.replaceReducer(rootReducer);
+  });
 }

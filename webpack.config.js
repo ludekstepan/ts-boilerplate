@@ -4,7 +4,7 @@ const Visualizer = require('webpack-visualizer-plugin');
 const {resolve} = require('path');
 const {getIfUtils, removeEmpty} = require('webpack-config-utils');
 
-const {ifProduction, ifNotProduction, ifNotTest} = getIfUtils(process.env.NODE_ENV || 'development');
+const {ifProduction, ifNotProduction} = getIfUtils(process.env.NODE_ENV || 'development');
 
 const vendors = [
   'react-dom',
@@ -52,7 +52,7 @@ module.exports = {
       template: resolve('./src/index.html'),
       inject: 'body',
     }),
-    ifNotTest(new webpack.optimize.CommonsChunkPlugin({name: 'vendor', filename: 'vendor.js'})),
+    new webpack.optimize.CommonsChunkPlugin({name: 'vendor', filename: 'vendor.js'}),
     new webpack.DefinePlugin({
       'process.env': {
         'NODE_ENV': JSON.stringify(process.env.NODE_ENV)

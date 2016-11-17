@@ -1,5 +1,6 @@
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const Visualizer = require('webpack-visualizer-plugin');
 const {resolve} = require('path');
 const {getIfUtils, removeEmpty} = require('webpack-config-utils');
 
@@ -59,7 +60,7 @@ module.exports = {
     }),
     ifNotProduction(new webpack.NamedModulesPlugin()),
 
-    ifProduction(new webpack.optimize.DedupePlugin()),
+    ifProduction(new Visualizer()),
     ifProduction(new webpack.optimize.OccurrenceOrderPlugin(true)),
     ifProduction(new webpack.optimize.UglifyJsPlugin({
       compress: {

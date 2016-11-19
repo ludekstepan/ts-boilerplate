@@ -5,15 +5,34 @@ require("react-hot-loader/patch");
 import * as React from "react";
 import {render} from "react-dom";
 import {Provider} from 'react-redux';
-import {createStore} from 'redux';
+import {createStore, applyMiddleware, compose, combineReducers} from 'redux';
 import {AppContainer} from 'react-hot-loader';
+import { router5Middleware, router5Reducer } from 'redux-router5';
 
 // application:
 import App from "./components/App";
 import rootReducer from './reducers';
+import createRouter from './router';
+
+// create the reducer
+const reducer = combineReducers({
+  router: router5Reducer,
+  root: rootReducer,
+});
+
+const router = createRouter();
 
 // create the store:
-const store = createStore(rootReducer, window.devToolsExtension && window.devToolsExtension());
+const enhancer = compose(
+  applyMiddleware(
+    router5Middleware(router),
+  ),
+  window.devToolsExtension && window.devToolsExtension(),
+);
+
+const store = createStore(reducer, enhancer);
+
+router.start();
 
 render(
   <AppContainer>

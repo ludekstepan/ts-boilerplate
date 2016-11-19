@@ -3,29 +3,25 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const Visualizer = require('webpack-visualizer-plugin');
 const {resolve} = require('path');
 const {getIfUtils, removeEmpty} = require('webpack-config-utils');
+const nodeExternals = require('webpack-node-externals');
 
 const {ifProduction, ifNotProduction, ifNotTest} = getIfUtils(process.env.NODE_ENV || 'development');
 
-const vendors = [
-  'react-dom',
-  'react',
-  'redux',
-  'react-redux',
-];
-
 module.exports = {
+  target: 'node',
+  externals: [nodeExternals()],
+
   devtool: 'source-map',
 
   // context: resolve('./src'),
 
   entry: {
-    app: './src/app.js',
-    vendor: vendors,
+    server: './src/server.js',
   },
 
   output: {
     filename: "[name].js",
-    path: resolve('./dist/client'),
+    path: resolve('./dist/server'),
   },
 
   module: {
@@ -48,25 +44,14 @@ module.exports = {
   },
 
   plugins: removeEmpty([
-    new HtmlWebpackPlugin({
-      template: resolve('./src/index.html'),
-      inject: 'body',
-    }),
-    ifNotTest(new webpack.optimize.CommonsChunkPlugin({name: 'vendor', filename: 'vendor.js'})),
     new webpack.DefinePlugin({
       'process.env': {
         'NODE_ENV': JSON.stringify(process.env.NODE_ENV)
       }
     }),
-    ifNotProduction(new webpack.NamedModulesPlugin()),
+    new webpack.NamedModulesPlugin(),
 
-    ifProduction(new Visualizer()),
-    ifProduction(new webpack.optimize.OccurrenceOrderPlugin(true)),
-    ifProduction(new webpack.optimize.UglifyJsPlugin({
-      compress: {
-        warnings: false,
-      },
-      sourceMap: true
-    })),
+    new Visualizer(),
+    new webpack.optimize.OccurrenceOrderPlugin(true),
   ]),
 };

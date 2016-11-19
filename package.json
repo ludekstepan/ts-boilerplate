@@ -6,13 +6,17 @@
   "scripts": {
     "clean": "rimraf dist",
     "compile": "NODE_ENV=production webpack",
+    "compile:dev": "NODE_ENV=development webpack",
+    "compile:server": "NODE_ENV=production webpack --config=webpack.server.config.js",
     "start": "webpack-dev-server --hot",
+    "start:server": "node dist/server/server.js",
     "test": "NODE_ENV=test ./node_modules/.bin/karma start --single-run",
     "test:dev": "NODE_ENV=test ./node_modules/.bin/karma start"
   },
   "author": "Ludek Stepan <ludek.stepan@gmail.com> (https://github.com/ludekstepan)",
   "license": "ISC",
   "dependencies": {
+    "express": "^4.14.0",
     "react": "^15.4.0",
     "react-dom": "^15.4.0",
     "react-redux": "^4.4.6",
@@ -43,6 +47,7 @@
     "webpack": "^2.1.0-beta.27",
     "webpack-config-utils": "^2.1.0",
     "webpack-dev-server": "^2.1.0-beta.8",
+    "webpack-node-externals": "^1.5.4",
     "webpack-visualizer-plugin": "^0.1.5"
   },
   "repository": {
